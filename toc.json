@@ -1,0 +1,1244 @@
+[
+  [ -1, { "/CPDFJSONannotformatversion": { "I": 1 } } ]
+    
+,
+  [
+    7,			// page number
+    32769,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 108 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 235.70759999999999 },
+        { "F": 750.3119999999999 },
+        { "F": 345.9468 },
+        { "F": 736.6731599999999 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " Model 100" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    7,			// page number
+    32770,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 9 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 103.51548000000001 },
+        { "F": 647.4959999999999 },
+        { "F": 495.37080000000003 },
+        { "F": 635.6051999999999 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " Introduction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    7,			// page number
+    32771,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 13 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 104.21484 },
+        { "F": 592.2408 },
+        { "F": 495.8952 },
+        { "F": 580.3512 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " 1 / Description of the Model 100 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    7,			// page number
+    32772,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 17 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 103.51548000000001 },
+        { "F": 578.0772 },
+        { "F": 495.8952 },
+        { "F": 565.3127999999999 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " 2 / Getting Power to the Computer . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    7,			// page number
+    32773,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 17 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 127.12079999999999 },
+        { "F": 563.3892 },
+        { "F": 495.8952 },
+        { "F": 552.1992 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " Battery Installation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    7,			// page number
+    32774,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 19 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 127.296 },
+        { "F": 549.2267999999999 },
+        { "F": 495.5448 },
+        { "F": 538.3847999999999 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " Connecting to a Power Source  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  11" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    7,			// page number
+    32775,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 21 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 103.51548000000001 },
+        { "F": 536.112 },
+        { "F": 495.8952 },
+        { "F": 524.3964 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " 3 / Turning the Power On and Off . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  13" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    7,			// page number
+    32776,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 21 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 127.12079999999999 },
+        { "F": 521.424 },
+        { "F": 495.8952 },
+        { "F": 512.5067999999999 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " Power-On . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  13" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    7,			// page number
+    32777,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 21 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 127.12079999999999 },
+        { "F": 507.4355999999999 },
+        { "F": 495.8952 },
+        { "F": 498.34319999999997 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " Power-Off. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  13" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    7,			// page number
+    32778,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 23 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 103.51548000000001 },
+        { "F": 493.9716 },
+        { "F": 495.8952 },
+        { "F": 484.17959999999994 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " 4 / The Main Menu Screen  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  15" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    7,			// page number
+    32779,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 24 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 127.12079999999999 },
+        { "F": 479.2836 },
+        { "F": 496.0692 },
+        { "F": 467.9171999999999 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " Adjusting the Display Screen  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  16" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    7,			// page number
+    32780,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 24 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 127.296 },
+        { "F": 465.11999999999995 },
+        { "F": 495.8952 },
+        { "F": 454.104 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " Selecting a Menu Item  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  16" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    7,			// page number
+    32781,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 25 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 99.31884000000001 },
+        { "F": 452.00519999999995 },
+        { "F": 495.8952 },
+        { "F": 440.1155999999999 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " 5 / Setting the Date, Time, and Day  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    7,			// page number
+    32782,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 27 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 103.69032 },
+        { "F": 439.2408 },
+        { "F": 495.8952 },
+        { "F": 422.62919999999997 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " 6 / Quick Instructions on Using the Applications Programs . . . . . . . . . . . 19" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    7,			// page number
+    32783,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 47 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 103.51548000000001 },
+        { "F": 381.71279999999996 },
+        { "F": 495.8952 },
+        { "F": 371.0471999999999 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " 7 / Main Menu Overview . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 39" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    7,			// page number
+    32784,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 51 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 103.69032 },
+        { "F": 370.88879999999995 },
+        { "F": 496.68839999999994 },
+        { "F": 356.00879999999995 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " 8 / Text Preparation (TEXT). . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  43" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    7,			// page number
+    32785,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 69 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 103.86515999999999 },
+        { "F": 355.99559999999997 },
+        { "F": 495.5448 },
+        { "F": 342.0204 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " 9/ Scheduling Appointments (SCHEDL)  . . . . . . . . . . . . . . . . . . . . . . . . . . . 61" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    7,			// page number
+    32786,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 77 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 104.21484 },
+        { "F": 339.9228 },
+        { "F": 496.0692 },
+        { "F": 327.85679999999996 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " 10 /  Recording Addresses (ADDRSS). . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 69" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    7,			// page number
+    32787,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 83 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 104.21484 },
+        { "F": 325.58399999999995 },
+        { "F": 496.0692 },
+        { "F": 313.6932 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " 11 /  Computer-to-Computer Communication (TELCOM) . . . . . . . . . . . . . 75" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    7,			// page number
+    32788,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 107 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 104.38968 },
+        { "F": 271.20359999999994 },
+        { "F": 500.9916 },
+        { "F": 260.01239999999996 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " 12 /  BASIC Overview. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  99" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    7,			// page number
+    32789,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 111 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 104.21484 },
+        { "F": 255.6407999999999 },
+        { "F": 500.9652 },
+        { "F": 241.82759999999996 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " 13 /  Data Types . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .103" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    7,			// page number
+    32790,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 123 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 104.38968 },
+        { "F": 241.65239999999994 },
+        { "F": 496.0692 },
+        { "F": 231.86040000000003 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " 14 /  Control Commands . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .115" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    7,			// page number
+    32791,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 129 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 104.38968 },
+        { "F": 227.48879999999997 },
+        { "F": 495.8952 },
+        { "F": 215.5992 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " 15 /  Input/Output  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .121" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    7,			// page number
+    32792,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 135 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 104.38968 },
+        { "F": 213.3252 },
+        { "F": 496.2444 },
+        { "F": 201.6107999999999 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " 16 /  BASIC Keywords  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .127" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    8,			// page number
+    32793,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 197 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 108.855 },
+        { "F": 653.0411999999999 },
+        { "F": 501.3948 },
+        { "F": 639.2424 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " Appendix A / Connecting the Model 100 to Optional Equipment. . . . . . .189" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    8,			// page number
+    32794,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 197 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 132.5076 },
+        { "F": 638.5511999999999 },
+        { "F": 501.44640000000004 },
+        { "F": 626.9375999999999 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " Cassette Recorder . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .189" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    8,			// page number
+    32795,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 199 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 132.2136 },
+        { "F": 624.7392 },
+        { "F": 500.7996 },
+        { "F": 613.0512 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " Printer. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .191" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    8,			// page number
+    32796,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 201 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 132.0888 },
+        { "F": 610.9259999999999 },
+        { "F": 501.198 },
+        { "F": 598.7256 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " Another TRS-80 Computer . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .193" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    8,			// page number
+    32797,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 203 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 108.53544000000001 },
+        { "F": 597.3204 },
+        { "F": 500.89919999999995 },
+        { "F": 584.8992 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " Appendix B / Notes on Power On/Off  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .195" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    8,			// page number
+    32798,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 203 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 132.0144 },
+        { "F": 582.9479999999999 },
+        { "F": 500.8356 },
+        { "F": 572.6171999999999 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " Warm vs. Cold  Power-On/Off  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .195" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    8,			// page number
+    32799,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 203 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 131.88719999999998 },
+        { "F": 568.7855999999999 },
+        { "F": 500.64959999999996 },
+        { "F": 555.9096 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " Changing the Auto-Power Off Settings . . . . . . . . . . . . . . . . . . . . . . . . .195" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    8,			// page number
+    32800,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 205 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 108.162 },
+        { "F": 555.0072 },
+        { "F": 501.81600000000003 },
+        { "F": 542.7936 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " Appendix C / Sample Sessions  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .197" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    8,			// page number
+    32801,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 213 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 108.03804 },
+        { "F": 542.6351999999998 },
+        { "F": 500.40240000000006 },
+        { "F": 528.7247999999998 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " Appendix D / Technical Information . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .205" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    8,			// page number
+    32802,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 213 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 131.6916 },
+        { "F": 526.8204000000001 },
+        { "F": 500.45279999999997 },
+        { "F": 512.9771999999999 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " Specifications . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .205" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    8,			// page number
+    32803,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 218 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 131.39280000000002 },
+        { "F": 512.9327999999999 },
+        { "F": 500.50200000000007 },
+        { "F": 499.78799999999995 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " Video Display Worksheet. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .210" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    8,			// page number
+    32804,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 219 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 131.4432 },
+        { "F": 498.6696 },
+        { "F": 499.8516 },
+        { "F": 486.5267999999999 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " Character Code Tables. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .211" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    8,			// page number
+    32805,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 225 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 131.3184 },
+        { "F": 484.506 },
+        { "F": 500.07839999999993 },
+        { "F": 472.5036 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " BASIC Error Codes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .217" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    8,			// page number
+    32806,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 226 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 131.1948 },
+        { "F": 470.51879999999994 },
+        { "F": 500.12879999999996 },
+        { "F": 458.51519999999994 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " Derived Functions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .218" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    8,			// page number
+    32807,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 227 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 107.46744 },
+        { "F": 456.7392 },
+        { "F": 500.18160000000006 },
+        { "F": 444.3864 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " Appendix E / Troubleshooting and Maintenance . . . . . . . . . . . . . . . . .. . . .219" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ],
+  [
+    8,			// page number
+    32808,		// object number. cpdf ignores and auto assigns.
+    {
+      "/Type": { "N": "/Annot" },
+      "/Subtype": { "N": "/Link" },
+      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
+      "/Dest": [ { "I": 229 }, { "N": "/XYZ"},
+		 { "I": 0 }, { "I": 791.9279999999999 }, { "I": 0 } ],
+
+      // bounding box rectangle (x1, y1, x2, y2)
+      "/Rect": [
+        { "F": 107.51831999999999 },
+        { "F": 442.74959999999993 },
+        { "F": 499.35839999999996 },
+        { "F": 430.74839999999995 }
+      ],
+      // Optional description for accessibility
+      "/Contents": { "U": " Index . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .221" },
+
+      // Annotation border geometry: horiz, vert corner radius, and width.
+      // (Width of 0 means no border).
+      "/Border": [ { "I": 0 }, { "I": 0 }, { "I": 0 } ],
+
+      // Color of border
+      "/C": [ { "I": 1 }, { "I": 0 }, { "I": 0 } ],
+
+      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
+      "/H": { "N": "/I" }
+    }
+  ]]
