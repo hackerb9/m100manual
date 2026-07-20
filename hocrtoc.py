@@ -156,8 +156,7 @@ def emit_annotation(pagefrom, pageto, rect, comment="",   xyz=None):
     Note that pagefrom and pageto are literal PDF page numbers, not labels. 
     """
 
-    boxwidth=0                  # Set to 1 to debug with boxes around links
-    
+    boxwidth=1                  # Set to 1 to debug with boxes around links
 
     if not xyz:
         xyz=(0, 11*72, 0)       # location on destinatinon page
@@ -165,38 +164,39 @@ def emit_annotation(pagefrom, pageto, rect, comment="",   xyz=None):
     global cpdf_kludge
     cpdf_kludge=cpdf_kludge+1
 
-    print(f""",
-  [
-    {pagefrom},			// page number
-    {cpdf_kludge},		// object number. cpdf ignores and auto assigns.
-    {{
-      "/Type": {{ "N": "/Annot" }},
-      "/Subtype": {{ "N": "/Link" }},
-      // Destination page. X, Y in top left, Z is zoom; 0 to disable.
-      "/Dest": [ {{ "I": {pageto} }}, {{ "N": "/XYZ"}},
-		 {{ "I": {xyz[0]} }}, {{ "I": {xyz[1]} }}, {{ "I": {xyz[2]} }} ],
+    print(f',\n'
+      f'[ '
+        f'{pagefrom}, '          # page annotation appears on
+        f'{cpdf_kludge}, '       # object number. cpdf ignores and auto assigns.
+        f'{{ '
+          # Optional description for accessibility and manual editing
+          f'"/Contents": {{ "U": "{comment}" }},'
 
-      // bounding box rectangle (x1, y1, x2, y2)
-      "/Rect": [
-        {{ "F": {rect[0]} }},
-        {{ "F": {rect[1]} }},
-        {{ "F": {rect[2]} }},
-        {{ "F": {rect[3]} }}
-      ],
-      // Optional description for accessibility
-      "/Contents": {{ "U": "{comment}" }},
+	  # Required type for simple links is /Annot/Link
+          f'"/Type": {{ "N": "/Annot" }},'
+          f'"/Subtype": {{ "N": "/Link" }},'
+          # Destination page. X, Y in top left, Z is zoom; 0 to disable.
+          f'"/Dest": [ {{ "I": {pageto} }}, {{ "N": "/XYZ"}},'
+    	            f' {{ "I": {xyz[0]} }}, {{ "I": {xyz[1]} }}, {{ "I": {xyz[2]} }} ],'
 
-      // Annotation border geometry: horiz, vert corner radius, and width.
-      // (Width of 0 means no border).
-      "/Border": [ {{ "I": 0 }}, {{ "I": 0 }}, {{ "I": {boxwidth} }} ],
+          # bounding box rectangle (x1, y1, x2, y2)
+          f'"/Rect": [ '
+            f'{{ "F": {rect[0]} }},'
+            f'{{ "F": {rect[1]} }},'
+            f'{{ "F": {rect[2]} }},'
+            f'{{ "F": {rect[3]} }}'
+          f'],'
+          # Annotation border geometry: horiz, vert corner radius, and width.
+          # (Width of 0 means no border).
+          f'"/Border": [ {{ "I": 0 }}, {{ "I": 0 }}, {{ "I": {boxwidth} }} ],'
 
-      // Color of border
-      "/C": [ {{ "I": 1 }}, {{ "I": 0 }}, {{ "I": 0 }} ],
+          # Color of border (if width>0)
+          f'"/C": [ {{ "I": 1 }}, {{ "I": 0 }}, {{ "I": 0 }} ],'
 
-      // Highlighting mode on mouse hover (None, Invert, Outline, or Push)
-      "/H": {{ "N": "/I" }}
-    }}
-  ]""", end='')
+          # Highlighting mode on mouse hover (N)one, (I)nvert, (O)utline, or (P)ush
+          f'"/H": {{ "N": "/I" }}'
+        f'}}'
+    f']', end='')
 
     # Reminder to self, instead of "/Dest", one could use an Action:
     # "/A": { "/S": { "N": "/GoTo" }, "/D": { "U": "chapter.1" } },
