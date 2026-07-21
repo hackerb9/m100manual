@@ -30,10 +30,17 @@ import sys
 #
 # * You may need to specify the page number of "Page 1". (-L 10)
 #   The same caveat about PDF page numbers beginning at 0 applies here.
-
-# BUGS:
 #
-# * Probably many, but none known at the moment.
+# * If the annotations show up on the wrong page, use the -T option to
+#   shift them forward or back.
+
+# BUGS:  
+#
+# * The interface consistently numbers pages starting with 0. That's
+#   the way PDF works internally, but it's not what other user facing
+#   programs do, including cpdf.
+#
+# * Probably many more, but none known at the moment.
 
 # Todo:
 #
@@ -182,6 +189,9 @@ def emit_annotation(pagefrom, pageto, rect, comment="",   xyz=None):
     # it and auto assigns a different number.
     global cpdf_kludge
     cpdf_kludge=cpdf_kludge+1
+
+    # cpdf numbers pages starting with 1!
+    pagefrom = pagefrom + 1
 
     print(f',\n'
       f'[ '
