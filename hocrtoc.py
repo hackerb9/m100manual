@@ -1,5 +1,6 @@
 #!/bin/python
 
+from getopt import gnu_getopt
 import xml
 import xml.etree.ElementTree as ET
 import re
@@ -8,10 +9,10 @@ import sys
 # Usage:
 # 1. Create toc.hocr file using 'tesseract page.png toc hocr'
 #    (Optionally, correct the hocr file using ScribeOCR).
-# 2. Run this program ./hocrtoc.py output.hocr > annot.json
-#    (Optionally, set boxwidth=1 in emit_annotation to see links.)
+# 2. Run this program ./hocrtoc.py output.hocr annot.json
+#    (Optionally, use --debug to see links.)
 #    (Optionally, edit annot.json if there are any mistakes.)
-# 3. Use cpdf -set-annotations annot.json foo.pdf -o bar.pdf
+# 3. Use cpdf -set-annotations annot.json in.pdf -o out.pdf
 
 # Tips:
 # * Only the hOCR file for the table of contents page(s) is needed. 
@@ -23,20 +24,20 @@ import sys
 #   the list of pages from a "file", but you needn't make a real file:
 #   'tesseract <(ls page*.png) toc hocr'
 
+# * You'll likely want to specify which page(s) have the TOC. (-t 7-8)
+#   The default is 0. Note that PDF files actually number the first
+#   page as 0, but most PDF viewers increase the count by one.
+#
+# * You may need to specify the page number of "Page 1". (-L 10)
+#   The same caveat about PDF page numbers beginning at 0 applies here.
 
 # BUGS:
-
-# * cpdf 2.9 removes the outline (AKA "bookmarks", AKA "index") from
-#   the sidebar when adding annotations. (Weirdly, I can still jump to
-#   the page number in Atril using ^L and typing the section name.)
+#
+# * Probably many, but none known at the moment.
 
 # Todo:
 #
 # * Use pikepdf to add annotations (instead of external cpdf command).
-#
-# * Allow user to specify which page(s) have the TOC (Table of Contents). 
-#
-# * Allow user to specify page label offset.
 #
 # * Use pikepdf to convert page label to page number
 #   (e.g., TOC says "Chapter One. . . . 5", but the page labeled "5"
@@ -54,10 +55,13 @@ import sys
 #   running cpdf, is there any terminal (character cell) interface
 #   that makes sense?
 
-def main(root):
-
-    toc_fudge = 7;              # XXX hardcoded PDF page number of TOC
-				# This should be passed in by command line
+def main(root, toc_first_page=0, toc_last_page=-1, toc_offset=0):
+    f"""
+    root is the hocr XML tree to process,
+    toc_first and _last are the page number of the TOC in the hocr input.
+    toc_offset is the number of pages to shift annotations in PDF output.
+    dpi is the dots-per-inch of the scanned images
+    """
 
     start_annotations()
 
@@ -66,6 +70,11 @@ def main(root):
         if page.get('class') != 'ocr_page':
             continue
         pgnum=pgnum+1
+
+        if pgnum < toc_first_page:
+            continue
+        if (pgnum > toc_last_page) and (toc_last_page >= 0):
+            continue
 
         # Parse "<div class='ocr_page' title='bbox 0 0 3500 4529'>"
         hocrbbox=page.get('title')
@@ -83,9 +92,7 @@ def main(root):
             # Flip origin from hocr's top-left to PDF's bottom-left.
             bbox=(bbox[0], hocrmaxy-bbox[1], bbox[2], hocrmaxy-bbox[3])
             # Convert from pixel coordinates to printer's points.
-            PixelsPI=600        # XXX hardcoded DPI but should be detected
-            PointsPI=72
-            bbox=list(x/PixelsPI*PointsPI for x in bbox)
+            bbox=list(pixels_to_points(x) for x in bbox)
 
             text=''
             for word in line.findall('{*}span'):
@@ -102,8 +109,8 @@ def main(root):
                 # Map from human sense of "page number" to PDF's literal number
                 refpg=label_to_page_number(numstr)
                 if (refpg >= 0):
-                    xyz=(0, hocrmaxy/PixelsPI*PointsPI, 0)
-                    emit_annotation(pgnum+toc_fudge, refpg, bbox, text, xyz)
+                    xyz=(0, pixels_to_points(hocrmaxy), 0)
+                    emit_annotation(pgnum+toc_offset, refpg, bbox, text, xyz)
                 else:
                     print(f"Error converting '{numstr}' to a page number",
                           text, file=sys.stderr)
@@ -111,6 +118,15 @@ def main(root):
                 print("Ignoring line without number at end",
                       text, file=sys.stderr)
     end_annotations()
+
+    if pgnum < toc_first_page:
+        print(f"Invalid TOC first page={toc_first_page}. Last page num is {pgnum} in hocr file.", file=sys.stderr)
+        
+def pixels_to_points(x):
+    """hOCR specifies bounding boxes using pixel coordinates.
+    PDF needs that scaled to printer's points"""
+    PointsPerInch=72
+    return x * PointsPerInch / PixelsPerInch
 
 
 def label_to_page_number(label):
@@ -122,14 +138,14 @@ def label_to_page_number(label):
     due to prefatory material.
     """
 
-    # XXX Hardcoded for each PDF file until we can figure out how to use
-    # pikepdf to convert from labels to page numbers.
-    return int(label)+8
-
+    # XXX Uses a value passed in from the command line for each PDF
+    # file until we can figure out how to use pikepdf to convert from
+    # labels to page numbers.
+    return int(label)+Label_Offset
 
 
 def print_tree(t, prefix=""):
-    r"""Just for debugging XML."""
+    r"""Just for debugging hocr XML."""
     for child in t:
         print(prefix, child.tag, child.attrib, child.text)
         print_tree(child, prefix+'\t')
@@ -156,18 +172,21 @@ def emit_annotation(pagefrom, pageto, rect, comment="",   xyz=None):
     Note that pagefrom and pageto are literal PDF page numbers, not labels. 
     """
 
-    boxwidth=1                  # Set to 1 to debug with boxes around links
+    boxwidth = Debug_Flag       # Set to 1 to debug with boxes around links
 
     if not xyz:
         xyz=(0, 11*72, 0)       # location on destinatinon page
-        		 	# XXX defaults to top of page for US Letter
+        		 	# defaults to top of page for US Letter
+
+    # Cpdf requires the object number to be unique, but then ignores
+    # it and auto assigns a different number.
     global cpdf_kludge
     cpdf_kludge=cpdf_kludge+1
 
     print(f',\n'
       f'[ '
         f'{pagefrom}, '          # page annotation appears on
-        f'{cpdf_kludge}, '       # object number. cpdf ignores and auto assigns.
+        f'{cpdf_kludge}, '       # object number. cpdf autoassigns.
         f'{{ '
           # Optional description for accessibility and manual editing
           f'"/Contents": {{ "U": "{comment}" }},'
@@ -202,20 +221,63 @@ def emit_annotation(pagefrom, pageto, rect, comment="",   xyz=None):
     # "/A": { "/S": { "N": "/GoTo" }, "/D": { "U": "chapter.1" } },
 
 
-if len(sys.argv) <= 2:
-    print(f"Usage: {sys.argv[0]} <infile.hocr> <outfile.json>", file=sys.stderr)
-    exit(1)
+# Parse args, open files, call main()
 
-try:
-    root = ET.parse(sys.argv[1]).getroot()
-except OSError as e:
-    print(f"{sys.argv[1]}: {e.strerror}", file=sys.stderr)
-    exit(1)
+import optparse
 
-try:
-    sys.stdout = open(sys.argv[2], 'w')
-except OSError as e:
-    print(f"{sys.argv[2]}: {e.strerror}", file=sys.stderr)
-    exit(1)
-    
-main(root)
+if __name__ == '__main__':
+    parser = optparse.OptionParser()
+    parser.set_usage("%prog [-v] [-t <p1>[-<p2>]] [-T <p> ] <input.hocr> <output.json>\n"
+                     "\tWhere <p> is a PDF page number (first page is 0).\n\n"
+                     "%prog: Add hyperlinks annotations to a scanned Table of Contents")
+    parser.add_option('-t', '--toc-page-number', dest='toc_pgnum', default="-", metavar='P1-P2',
+                      help="Which pages in the input hocr file hold the Table of Contents to parse. Use x-y (dash) to separate a range. First page is 0. Defaults to all pages.")
+    parser.add_option('-d', '--dpi', dest='DPI', default="600", 
+                      help="Dots Per Inch of the scan for converting from hocr bitmap coordinates to PDF typographic points. Defaults to 600.")
+    parser.add_option('-T', '--toc-offset', dest='toc_offset', default="0", metavar='N',
+                      help="Annotations are drawn shifted this many pages in the output. Useful if hocr is created from a PDF with just the TOC. Defaults to +0.")
+    parser.add_option('-L', '--label-offset', dest='label_offset', default="0", metavar='N',
+                      help="The PDF page number of the page labeled '1'. Useful when front matter — title page, colophon, frontispiece, etc. — come before page 1.")
+    parser.add_option('-v', dest='verbose', action='count', default=0,
+                      help="Increase verbosity")
+    parser.add_option('--debug', dest='debug', action='count', default=0,
+                      help="Show red boxes around annotations")
+    (opts, args) = parser.parse_args()
+
+    if len(args) <= 1:
+        print(f"Usage: {sys.argv[0]} <infile.hocr> <outfile.json>", file=sys.stderr)
+        exit(1)
+
+    try:
+        root = ET.parse(args[0]).getroot()
+    except OSError as e:
+        print(f"{args[0]}: {e.strerror}", file=sys.stderr)
+        exit(1)
+
+    try:
+        sys.stdout = open(args[1], 'w')
+    except OSError as e:
+        print(f"{args[1]}: {e.strerror}", file=sys.stderr)
+        exit(1)
+
+    if '-' in opts.toc_pgnum:
+        (toc_first_page, toc_last_page) = opts.toc_pgnum.split('-')
+        if not toc_first_page: toc_first_page="0"
+        if not toc_last_page: toc_last_page="-1"
+    else:
+        toc_first_page = opts.toc_pgnum
+        toc_last_page  = opts.toc_pgnum
+
+    global Label_Offset
+    Label_Offset=int(opts.label_offset)
+    global PixelsPerInch
+    PixelsPerInch = float(opts.DPI)
+    global Debug_Flag
+    Debug_Flag = opts.debug
+    global Verbose_Flag
+    Verbose_Flag = opts.verbose
+
+    main(root,
+         toc_first_page=int(toc_first_page),
+         toc_last_page=int(toc_last_page),
+         toc_offset=int(opts.toc_offset))
