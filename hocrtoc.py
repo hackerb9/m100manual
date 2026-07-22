@@ -68,6 +68,13 @@ import sys
 #   annotations? Other than editing the annot.json output file before
 #   running cpdf, is there any terminal (character cell) interface
 #   that makes sense?
+#
+# * Handle Index pages which can have multiple page destinations:
+#   "AC Power . . . . . . 3,7,11"
+
+# REFERENCE
+# * http://kba.github.io/hocr-spec/1.2/
+# * https://docs.python.org/3/library/xml.etree.elementtree.html#xpath-support
 
 def main(root, toc_first_page=0, toc_last_page=-1,
          toc_offset=0, index_mode=False):
@@ -75,18 +82,26 @@ def main(root, toc_first_page=0, toc_last_page=-1,
     root is the hocr XML tree to process,
     toc_first and _last are the page number of the TOC in the hocr input.
     toc_offset is the number of pages to shift annotations in PDF output.
-    index_mode indicates if numbers should be highlighted individually (instead of entire lines).
+    index_mode indicates if numbers should be highlighted individually.
     """
 
     # Get rid of whitespace that tesseract adds before ocrx_cinfo tags 
     root = preprocess_hocr(root)
     start_annotations()
 
+    # Walk through tree looking for pages, lines, words, chars.
     pgnum=-1
-    for page in root.iter():
-        if page.get('class') != 'ocr_page':
-            continue
-        pgnum=pgnum+1
+    #    for page in root.iter():
+    #    if page.get('class') != 'ocr_page':
+    #        continue
+    #    pgnum=pgnum+1
+    for page in root.findall(".//{*}*[@class='ocr_page']"):
+        # page.attrib = {'class': 'ocr_page', 'id': 'page_1', 'title': 'image "page-229-000.png"; bbox 0 0 5100 6600; ppageno 0; scan_res 600 600'}
+        props = hocr_props(page.attrib['title'])
+        if 'ppageno' in props:
+            pgnum = int(props['ppageno'])
+        else:
+            pgnum = pgnum+1     # No physical page number in scan, so guess.
 
         if pgnum < toc_first_page:
             continue
@@ -94,10 +109,11 @@ def main(root, toc_first_page=0, toc_last_page=-1,
             continue
 
         # Parse "<div class='ocr_page' title='bbox 0 0 3500 4529'>"
-        hocrbbox=page.get('title')
-        hocrbbox=re.search(r'bbox[^;]*', hocrbbox).group(0).split()[1:]
-        hocrbbox=list(map(float, hocrbbox))
-        hocrmaxy=max(hocrbbox[3], hocrbbox[1])
+#        hocrbbox=page.get('title')
+#        hocrbbox=re.search(r'bbox[^;]*', hocrbbox).group(0).split()[1:]
+#        hocrbbox=list(map(float, hocrbbox))
+        pagebbox = props['bbox']
+        pagemaxy=max(int(pagebbox[2]), int(pagebbox[0]))
 
         for line in page.iter():
             if line.get('class') != 'ocr_line':
@@ -107,7 +123,7 @@ def main(root, toc_first_page=0, toc_last_page=-1,
             bbox=re.search(r'bbox[^;]*', bbox).group(0).split()[1:]
             bbox=list(map(float, bbox))
             # Flip origin from hocr's top-left to PDF's bottom-left.
-            bbox=(bbox[0], hocrmaxy-bbox[1], bbox[2], hocrmaxy-bbox[3])
+            bbox=(bbox[0], pagemaxy-bbox[1], bbox[2], pagemaxy-bbox[3])
             # Convert from pixel coordinates to printer's points.
             bbox=list(pixels_to_points(x) for x in bbox)
 
@@ -115,8 +131,10 @@ def main(root, toc_first_page=0, toc_last_page=-1,
             for word in line.findall('{*}span'):
                 if word.get('class') != 'ocrx_word':
                     continue
+                if text:
+                    text = text + ' '
                 if word.text:
-                    text=text+' '+word.text
+                    text = text + word.text
                 for char in word.findall('{*}span'):
                     if char.get('class') != 'ocrx_cinfo':
                         continue
@@ -137,7 +155,7 @@ def main(root, toc_first_page=0, toc_last_page=-1,
                     if (Verbose_Flag>0):
                         print(f"Adding link to page {refpg} from {pgnum+toc_offset}"
                               f" for text: {text}", file=sys.stderr)
-                    xyz=(0, pixels_to_points(hocrmaxy), 0)
+                    xyz=(0, pixels_to_points(pagemaxy), 0)
                     emit_annotation(pgnum+toc_offset, refpg, bbox, text, xyz)
                 else:
                     print(f"Error converting '{numstr}' to a page number",
@@ -183,11 +201,12 @@ def preprocess_hocr(root):
   <span class='ocrx_cinfo' title='x_bboxes 89 105 94 111; x_conf 99.5'>C</span>
 </span>
 
-    That's a problem since HTML/XML treats white-space as meaningful.
+    That's a problem since XML treats white-space as meaningful.
     Python's XML reads the above as "\n  A\n  C\n" instead of "AC".
 
-    We could try to walk the tree to find that errant whitespace, but
-    that is annoyingly tricky to get right with XPATH.
+    We could try to find and replace that errant whitespace using
+    XPATH, but as far as domain specific languages go, it is
+    underpowered and annoyingly tricky to get right.
 
     Fortunately, there's an easier solution: regexes!
 
@@ -195,6 +214,7 @@ def preprocess_hocr(root):
 
     Yes, it is not a general fix, but as far as I know, this is not a
     general problem. This is a patch just for tesseract 5.5.0.
+
     """
     hocrtext = xml.etree.ElementTree.tostring(root, encoding="unicode")
     
@@ -291,9 +311,39 @@ def emit_annotation(pagefrom, pageto, rect, comment="",   xyz=None):
 
 def enquote(s):
     r"""Given a string with possible double-quotes in it ("), put
-    a backslash in front of them."""
+    a backslash in front of each."""
     regex = re.compile(r'"')
     return re.sub(regex, '\\"', s)
+
+def hocr_props(title: str) -> dict:
+    """Given the 'title' attribute from an HTML tag, return a
+    dictionary of the hOCR properties. 
+
+    Example input:
+    'image "p1.png"; bbox 0 0 5100 6600; ppageno 0'
+
+    Example output:
+    {'image': "p1.png"; 'bbox': [0 0 5100 6600]; 'ppageno': 0}
+
+    See: http://kba.github.io/hocr-spec/1.2/#properties
+         http://kba.github.io/hocr-spec/1.2/#definition-property
+         http://kba.github.io/hocr-spec/1.2/#hocr-props
+    """
+    rv = {}
+    for attrib in title.split(';'):
+        (name, *values) = attrib.split()
+        if not name:
+            continue
+        if not values:
+            rv[name] = ""
+        elif len(values) == 1:
+            rv[name] = values[0] 
+        else:
+            rv[name] = [ *values ]
+    return rv
+
+
+
 
 # Parse args, open files, call main()
 
