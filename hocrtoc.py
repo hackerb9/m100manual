@@ -23,6 +23,13 @@ import sys
 # * To create a single hOCR for multiple pages, tesseract has to read
 #   the list of pages from a "file", but you needn't make a real file:
 #   'tesseract <(ls page*.png) toc hocr'
+#
+# * For grabbing an index which can have multiple numbers separated by
+# * columns, it is best run tesseract like so to grab individual char boxes: 
+#
+#    tesseract <(ls page*png) output -c hocr_char_boxes=1 hocr
+
+
 
 # * You'll likely want to specify which page(s) have the TOC. (-t 7-8)
 #   The default is 0. Note that PDF files actually number the first
@@ -62,14 +69,17 @@ import sys
 #   running cpdf, is there any terminal (character cell) interface
 #   that makes sense?
 
-def main(root, toc_first_page=0, toc_last_page=-1, toc_offset=0):
+def main(root, toc_first_page=0, toc_last_page=-1,
+         toc_offset=0, index_mode=False):
     f"""
     root is the hocr XML tree to process,
     toc_first and _last are the page number of the TOC in the hocr input.
     toc_offset is the number of pages to shift annotations in PDF output.
-    dpi is the dots-per-inch of the scanned images
+    index_mode indicates if numbers should be highlighted individually (instead of entire lines).
     """
 
+    # Get rid of whitespace that tesseract adds before ocrx_cinfo tags 
+    root = preprocess_hocr(root)
     start_annotations()
 
     pgnum=-1
@@ -105,9 +115,17 @@ def main(root, toc_first_page=0, toc_last_page=-1, toc_offset=0):
             for word in line.findall('{*}span'):
                 if word.get('class') != 'ocrx_word':
                     continue
-                text=text+' '+word.text
+                if word.text:
+                    text=text+' '+word.text
+                for char in word.findall('{*}span'):
+                    if char.get('class') != 'ocrx_cinfo':
+                        continue
+                    if char.text:
+                        text=text+char.text
+            if not text:
+                continue
             numstr=''
-            for c in word.text[::-1]:
+            for c in text[::-1]:
                 if c.isdigit():
                     numstr=c+numstr
                 else:
@@ -116,14 +134,18 @@ def main(root, toc_first_page=0, toc_last_page=-1, toc_offset=0):
                 # Map from human sense of "page number" to PDF's literal number
                 refpg=label_to_page_number(numstr)
                 if (refpg >= 0):
+                    if (Verbose_Flag>0):
+                        print(f"Adding link to page {refpg} from {pgnum+toc_offset}"
+                              f" for text: {text}", file=sys.stderr)
                     xyz=(0, pixels_to_points(hocrmaxy), 0)
                     emit_annotation(pgnum+toc_offset, refpg, bbox, text, xyz)
                 else:
                     print(f"Error converting '{numstr}' to a page number",
                           text, file=sys.stderr)
             else:
-                print("Ignoring line without number at end",
-                      text, file=sys.stderr)
+                if (Verbose_Flag>1):
+                    print("Ignoring line without number at end",
+                          text, file=sys.stderr)
     end_annotations()
 
     if pgnum < toc_first_page:
@@ -151,9 +173,46 @@ def label_to_page_number(label):
     return int(label)+Label_Offset
 
 
+def preprocess_hocr(root):
+    r"""Fix tesseract's mistaken whitespace before each ocrx_cinfo. 
+
+    `tesseract -c hocr_char_boxes=1` generates HTML that looks like this:
+
+<span class='ocrx_word' id='word_1_14' title='bbox 83 105 94 111; x_wconf 96'>
+  <span class='ocrx_cinfo' title='x_bboxes 83 105 88 111; x_conf 99.5'>A</span>
+  <span class='ocrx_cinfo' title='x_bboxes 89 105 94 111; x_conf 99.5'>C</span>
+</span>
+
+    That's a problem since HTML/XML treats white-space as meaningful.
+    Python's XML reads the above as "\n  A\n  C\n" instead of "AC".
+
+    We could try to walk the tree to find that errant whitespace, but
+    that is annoyingly tricky to get right with XPATH.
+
+    Fortunately, there's an easier solution: regexes!
+
+	    [\n\s]*(<span class="ocrx_cinfo)
+
+    Yes, it is not a general fix, but as far as I know, this is not a
+    general problem. This is a patch just for tesseract 5.5.0.
+    """
+    hocrtext = xml.etree.ElementTree.tostring(root, encoding="unicode")
+    
+    regex = re.compile(r"""
+    	[\n\s]*                 # Chew up whitespace & newlines
+        (?=			# Positive lookahead assertion
+    	    <(html:)?           #    Tag start and optional "html:" prefix
+    	    SPAN[^>]*CLASS=     #    SPAN tag, CLASS property
+            "OCRX_CINFO"        #    Character info class
+        )			# End group "cinfo"
+    """, flags = re.IGNORECASE | re.VERBOSE) # Ignore case, allow comments
+
+    rv = re.sub(regex, '' , hocrtext)
+    return ET.fromstring(rv)
+
 def print_tree(t, prefix=""):
     r"""Just for debugging hocr XML."""
-    for child in t:
+    for child in t.findall('*'):
         print(prefix, child.tag, child.attrib, child.text)
         print_tree(child, prefix+'\t')
         
@@ -199,7 +258,7 @@ def emit_annotation(pagefrom, pageto, rect, comment="",   xyz=None):
         f'{cpdf_kludge}, '       # object number. cpdf autoassigns.
         f'{{ '
           # Optional description for accessibility and manual editing
-          f'"/Contents": {{ "U": "{comment}" }},'
+          f'"/Contents": {{ "U": "{enquote(comment)}" }},'
 
 	  # Required type for simple links is /Annot/Link
           f'"/Type": {{ "N": "/Annot" }},'
@@ -230,6 +289,11 @@ def emit_annotation(pagefrom, pageto, rect, comment="",   xyz=None):
     # Reminder to self, instead of "/Dest", one could use an Action:
     # "/A": { "/S": { "N": "/GoTo" }, "/D": { "U": "chapter.1" } },
 
+def enquote(s):
+    r"""Given a string with possible double-quotes in it ("), put
+    a backslash in front of them."""
+    regex = re.compile(r'"')
+    return re.sub(regex, '\\"', s)
 
 # Parse args, open files, call main()
 
@@ -250,8 +314,11 @@ if __name__ == '__main__':
                       help="The PDF page number of the page labeled '1'. Useful when front matter — title page, colophon, frontispiece, etc. — come before page 1.")
     parser.add_option('-v', dest='verbose', action='count', default=0,
                       help="Increase verbosity")
+    parser.add_option('-i', '--index-mode', dest='index_mode', action='store_true', default=False,
+                      help="Make links for individual numbers. Useful for indices which often have multiple pages listed for an entry.")
     parser.add_option('--debug', dest='debug', action='count', default=0,
                       help="Show red boxes around annotations")
+    
     (opts, args) = parser.parse_args()
 
     if len(args) <= 1:
@@ -290,4 +357,5 @@ if __name__ == '__main__':
     main(root,
          toc_first_page=int(toc_first_page),
          toc_last_page=int(toc_last_page),
-         toc_offset=int(opts.toc_offset))
+         toc_offset=int(opts.toc_offset),
+         index_mode=opts.index_mode)
