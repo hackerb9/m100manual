@@ -98,50 +98,57 @@ def main(root, toc_first_page=0, toc_last_page=-1,
     for page in root.findall(".//{*}*[@class='ocr_page']"):
         # page.attrib = {'class': 'ocr_page', 'id': 'page_1', 'title': 'image "page-229-000.png"; bbox 0 0 5100 6600; ppageno 0; scan_res 600 600'}
         props = hocr_props(page.attrib['title'])
+
+        # Does hocr contain the "physical" page numbers?   "Pa-, pa-, pa-, Papageno!" 
         if 'ppageno' in props:
-            pgnum = int(props['ppageno'])
+            pgnum = props['ppageno']
         else:
             pgnum = pgnum+1     # No physical page number in scan, so guess.
 
+        # Make sure pgnum is within the bounds specified by the -t option.  
         if pgnum < toc_first_page:
             continue
         if (pgnum > toc_last_page) and (toc_last_page >= 0):
             continue
 
+        # XXX maybe should snarf lpageno here, the logical page number for -L (label offset)
+
         # Parse "<div class='ocr_page' title='bbox 0 0 3500 4529'>"
-#        hocrbbox=page.get('title')
-#        hocrbbox=re.search(r'bbox[^;]*', hocrbbox).group(0).split()[1:]
-#        hocrbbox=list(map(float, hocrbbox))
         pagebbox = props['bbox']
         pagemaxy=max(int(pagebbox[2]), int(pagebbox[0]))
+        v(f"hocr page bbox is {pagebbox}, pagemaxy is {pagemaxy}")
 
         for line in page.iter():
             if line.get('class') != 'ocr_line':
                 continue
 
-            bbox=line.attrib['title']
-            bbox=re.search(r'bbox[^;]*', bbox).group(0).split()[1:]
-            bbox=list(map(float, bbox))
+            # Decode the HTML "title" string into hocr properties.
+            props = hocr_props(line.attrib['title'])
+            bbox = props['bbox']
+            vvv(f"hocr line {bbox=} ")
+
             # Flip origin from hocr's top-left to PDF's bottom-left.
             bbox=(bbox[0], pagemaxy-bbox[1], bbox[2], pagemaxy-bbox[3])
             # Convert from pixel coordinates to printer's points.
             bbox=list(pixels_to_points(x) for x in bbox)
 
+            # Reconstitute the line of text from the component words.
             text=''
-            for word in line.findall('{*}span'):
-                if word.get('class') != 'ocrx_word':
-                    continue
+            for word in line.findall('{*}*[@class="ocrx_word"]'):
                 if text:
                     text = text + ' '
                 if word.text:
                     text = text + word.text
-                for char in word.findall('{*}span'):
-                    if char.get('class') != 'ocrx_cinfo':
-                        continue
-                    if char.text:
-                        text=text+char.text
+                else:
+                    # If each word is broken into characters, accumulate them.
+                    for char in word.findall('{*}*[@class="ocrx_cinfo"]'):
+                        if char.text:
+                            text=text+char.text
             if not text:
+                vv(f"No text in line. {line.attrib=}")
                 continue
+
+            # Check if the line of text ends with a number.
             numstr=''
             for c in text[::-1]:
                 if c.isdigit():
@@ -149,25 +156,23 @@ def main(root, toc_first_page=0, toc_last_page=-1,
                 else:
                     break
             if numstr:
-                # Map from human sense of "page number" to PDF's literal number
+                # Map from human logical sense of "page number" to PDF's physical number
                 refpg=label_to_page_number(numstr)
                 if (refpg >= 0):
-                    if (Verbose_Flag>0):
-                        print(f"Adding link to page {refpg} from {pgnum+toc_offset}"
-                              f" for text: {text}", file=sys.stderr)
+                    v(f"Adding link to page {refpg} from {pgnum+toc_offset} for text: {text}")
                     xyz=(0, pixels_to_points(pagemaxy), 0)
                     emit_annotation(pgnum+toc_offset, refpg, bbox, text, xyz)
                 else:
                     print(f"Error converting '{numstr}' to a page number",
                           text, file=sys.stderr)
             else:
-                if (Verbose_Flag>1):
-                    print("Ignoring line without number at end",
-                          text, file=sys.stderr)
+                vv(f"Ignoring line without number at end: {text}")
+
     end_annotations()
 
     if pgnum < toc_first_page:
         print(f"Invalid TOC first page={toc_first_page}. Last page num is {pgnum} in hocr file.", file=sys.stderr)
+
         
 def pixels_to_points(x):
     """hOCR specifies bounding boxes using pixel coordinates.
@@ -183,6 +188,9 @@ def label_to_page_number(label):
     use to refer to a page numbers. For example, the table of contents
     may indicate page "1", but that might be the 10th page in the file
     due to prefatory material.
+
+    Hocr uses the term "logical page no (lpageno)" for the label page
+    number, and "physical page no (ppageno)" for the PDF page number.
     """
 
     # XXX Uses a value passed in from the command line for each PDF
@@ -204,9 +212,9 @@ def preprocess_hocr(root):
     That's a problem since XML treats white-space as meaningful.
     Python's XML reads the above as "\n  A\n  C\n" instead of "AC".
 
-    We could try to find and replace that errant whitespace using
-    XPATH, but as far as domain specific languages go, it is
-    underpowered and annoyingly tricky to get right.
+    We could try to delete that errant whitespace using XPATH, but as
+    far as domain specific languages go, it is underpowered and
+    annoyingly tricky to get right.
 
     Fortunately, there's an easier solution: regexes!
 
@@ -227,6 +235,7 @@ def preprocess_hocr(root):
         )			# End group "cinfo"
     """, flags = re.IGNORECASE | re.VERBOSE) # Ignore case, allow comments
 
+    # Delete whitespace before a hocr ocrx_cinfo tag 
     rv = re.sub(regex, '' , hocrtext)
     return ET.fromstring(rv)
 
@@ -236,8 +245,8 @@ def print_tree(t, prefix=""):
         print(prefix, child.tag, child.attrib, child.text)
         print_tree(child, prefix+'\t')
         
-
 def start_annotations():
+    # CPDF's JSON starts with a dummy value indicating the format version number
     print("""[
   [ -1, { "/CPDFJSONannotformatversion": { "I": 1 } } ]
     """)
@@ -315,15 +324,27 @@ def enquote(s):
     regex = re.compile(r'"')
     return re.sub(regex, '\\"', s)
 
-def hocr_props(title: str) -> dict:
+def old_hocr_props(title: str) -> dict:
     """Given the 'title' attribute from an HTML tag, return a
     dictionary of the hOCR properties. 
 
     Example input:
-    'image "p1.png"; bbox 0 0 5100 6600; ppageno 0'
+    title='image "p 1;.png"; bbox 0.5 0 5100 6600; ppageno 0'
 
     Example output:
-    {'image': "p1.png"; 'bbox': [0 0 5100 6600]; 'ppageno': 0}
+    {'image': "p 1;.png"; 'bbox': [0.5 0 5100 6600]; 'ppageno': 0}
+
+    Notes:
+
+    1. Property names are limited to a few dozen keywords which are
+    always all lowercase and with no symbols except underscore.
+
+    2. Property values can be either ascii-words or double-quote
+    delimited ASCII-strings, separated by one or more spaces.
+
+    3. ASCII strings are delimited by double-quotes and there is no
+    mechanism to ever allow a double-quote inside the string.
+    However, ";" (semicolon) and " " (space) *are* allowed.
 
     See: http://kba.github.io/hocr-spec/1.2/#properties
          http://kba.github.io/hocr-spec/1.2/#definition-property
@@ -334,6 +355,9 @@ def hocr_props(title: str) -> dict:
         (name, *values) = attrib.split()
         if not name:
             continue
+        values = [ int(x) if re.match(r'^[-+0-9]+$', x) else
+                   float(x) if re.match(r'^[-+0-9.]+$', x) else x
+                   for x in values ]
         if not values:
             rv[name] = ""
         elif len(values) == 1:
@@ -342,7 +366,107 @@ def hocr_props(title: str) -> dict:
             rv[name] = [ *values ]
     return rv
 
+def hocr_props(title: str) -> dict:
+    """Given the 'title' attribute from an HTML tag, return a
+    dictionary of the hOCR properties. 
 
+    Example input:
+    title='image "p 1;.png"; bbox 0.5 0 5100 6600; ppageno 0'
+
+    Example output:
+    {'image': "p 1;.png"; 'bbox': [0.5 0 5100 6600]; 'ppageno': 0}
+
+    Notes:
+
+    1. Property names are limited to a few dozen keywords which are
+    always all lowercase and with no symbols except underscore.
+
+    2. Property values can be either ascii-words or double-quote
+    delimited ASCII-strings, separated by one or more spaces.
+
+    3. ASCII strings are delimited by double-quotes and there is no
+    mechanism to ever allow a double-quote inside the string.
+    However, ";" (semicolon) and " " (space) *are* allowed.
+
+    See: http://kba.github.io/hocr-spec/1.2/#properties
+         http://kba.github.io/hocr-spec/1.2/#definition-property
+         http://kba.github.io/hocr-spec/1.2/#hocr-props
+    """
+    s=title.split('"')
+    t=""                        # title, with metachars rendered harmless in delimited-strings 
+
+    # Split by double-quote. Even indices are the delimited strings (ASCII).
+    for (b,a) in (zip (s[1::2]+[None], s[::2] )):
+        t=t+a
+        if b:
+            b=mogrify(b)            # quote metachars in strings to prevent confusion.
+            t=t+b
+    rv = {}
+    for attrib in t.split(';'):
+        try:
+            (name, *values) = attrib.split()
+        except ValueError as e:
+            continue
+        values = [ int(x) if re.match(r'^[-+0-9]+$', x) else
+                   float(x) if re.match(r'^[-+0-9.]+$', x) else x
+                   for x in values ]
+        if not values:
+            rv[name] = ""
+        elif len(values) == 1:
+            rv[name] = values[0] 
+        else:
+            rv[name] = [ *values ]
+
+    return demogrify(rv)
+
+# Translation tables used by (de)mogrify()
+trantable={ ord(';'): 0x204f,      # Quote semicolons with reversed semicolon 
+            ord(' '): 0x2420,      # Quote space with SP
+            ord(','): 0x02bb,      # Quote comma with turned comma
+            ord('\t'): 0x2409 }    # Quote tab as HT (not technically needed)
+inverse={ k:v for v,k in trantable.items() }
+
+def mogrify(v):
+    """Helper function for parsing hocr strings. Converts characters
+    with syntactic meaning to harmless Unicode characters. Since hocr
+    is required to use ASCII, these characters will be unique and can
+    be safely round-tripped.
+    """
+    global trantable;
+    if type(v) == list:
+        return [ mogrify(x) for x in v ]
+    elif type(v) == str:
+        return v.translate(trantable)
+    else:
+        return v
+
+def demogrify(v):
+    """Undo mogrify(), which see."""
+    global inverse;
+    if type(v) == list:
+        return [ demogrify(x) for x in v ]
+    if type(v) == dict:
+        return { x:demogrify(v[x]) for x in v }
+    elif type(v) == str:
+        return v.translate(inverse)
+    else:
+        return v
+
+
+# Verbose output to aid with debugging.
+def v(s: str, file=sys.stderr, level=1, *rest, **kw):
+    """Verbose print(), only if -v or greater was specified."""
+    if (Verbose_Flag>=level):
+        print(s, file=file, *rest, **kw)
+
+def vv(s: str, file=sys.stderr, level=2, *rest, **kw):
+    """Verbose print(), only if -vv or greater was specified."""
+    v(s, file, level, *rest, **kw)
+    
+def vvv(s: str, file=sys.stderr, level=3, *rest, **kw):
+    """Verbose print(), only if -vvv or greater was specified."""
+    v(s, file, level, *rest, **kw)
+    
 
 
 # Parse args, open files, call main()
