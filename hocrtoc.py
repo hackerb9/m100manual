@@ -91,15 +91,12 @@ def main(root, toc_first_page=0, toc_last_page=-1,
 
     # Walk through tree looking for pages, lines, words, chars.
     pgnum=-1
-    #    for page in root.iter():
-    #    if page.get('class') != 'ocr_page':
-    #        continue
-    #    pgnum=pgnum+1
     for page in root.findall(".//{*}*[@class='ocr_page']"):
         # page.attrib = {'class': 'ocr_page', 'id': 'page_1', 'title': 'image "page-229-000.png"; bbox 0 0 5100 6600; ppageno 0; scan_res 600 600'}
         props = hocr_props(page.attrib['title'])
 
-        # Does hocr contain the "physical" page numbers?   "Pa-, pa-, pa-, Papageno!" 
+        # 					    "Pa-, pa-, pa-, Papageno!" 
+        # Does hocr contain the "physical" page numbers? 
         if 'ppageno' in props:
             pgnum = props['ppageno']
         else:
@@ -111,11 +108,11 @@ def main(root, toc_first_page=0, toc_last_page=-1,
         if (pgnum > toc_last_page) and (toc_last_page >= 0):
             continue
 
-        # XXX maybe should snarf lpageno here, the logical page number for -L (label offset)
+        # XXX maybe should snarf lpageno here, the page label for -L (logical offset)
 
         # Parse "<div class='ocr_page' title='bbox 0 0 3500 4529'>"
         pagebbox = props['bbox']
-        pagemaxy=max(int(pagebbox[2]), int(pagebbox[0]))
+        pagemaxy=max(int(pagebbox[3]), int(pagebbox[1]))
         v(f"hocr page bbox is {pagebbox}, pagemaxy is {pagemaxy}")
 
         for line in page.iter():
