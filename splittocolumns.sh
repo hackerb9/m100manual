@@ -37,8 +37,6 @@ mask["page-232.png"]="2637 1049 4212 2166"
 
 ######################################################################
 
-# For laughs, let's die if a variable is used without being set first.
-set -o nounset
 
 mkdir -p twocol
 for pg in ${!mask[@]}; do
