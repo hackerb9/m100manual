@@ -19,8 +19,7 @@
 # After this script is run, 1. use tesseract in hocr-mode. 2. Edit the
 # resulting .hocr so that each pair of columns are merged into a
 # single page by deleting the intervening </div><div class='ocr_page"...>. 
-# 3. Optionally adjust the ppageno and id to match the physical and
-# logical page numbers.
+# (See the 2ctohocr.sh script).
 
 ######################################################################
 
@@ -29,18 +28,16 @@ pgbbox="0 0 5100 6600"
 read bbx1 bby1 bbx2 bby2 <<< $pgbbox
 
 declare -A mask
-mask["page-229.png"]="2540 1045 4201 6025"
-mask["page-230.png"]="2658 1047 4221 6046"
-mask["page-231.png"]="2602 1049 4177 6050"
-mask["page-232.png"]="2637 1049 4212 2166"
+mask["index-000.png"]="2540 1045 4201 6025" 	# Manually determined values
+mask["index-001.png"]="2658 1047 4221 6046"
+mask["index-002.png"]="2602 1049 4177 6050"
+mask["index-003.png"]="2637 1049 4212 2166"
 
 
 ######################################################################
 
-
-mkdir -p twocol
 for pg in ${!mask[@]}; do
-    output="twocol/${pg%.*}"
+    output="${pg%.*}"
     echo  "Writing to $output..." >&2
     read x1 y1 x2 y2 <<< ${mask[$pg]}
 
