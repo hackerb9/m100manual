@@ -38,7 +38,7 @@ import sys
 # * You may need to specify the page number of "Page 1". (-L 10)
 #   The same caveat about PDF page numbers beginning at 0 applies here.
 #
-# * If the annotations show up on the wrong page, use the -T option to
+# * If the annotations show up on the wrong page, use the -P option to
 #   shift them forward or back.
 
 # BUGS:  
@@ -77,11 +77,11 @@ import sys
 # * https://docs.python.org/3/library/xml.etree.elementtree.html#xpath-support
 
 def main(root, toc_first_page=0, toc_last_page=-1,
-         toc_offset=0, index_mode=False):
+         physical_offset=0, index_mode=False):
     f"""
     root is the hocr XML tree to process,
     toc_first and _last are the page number of the TOC in the hocr input.
-    toc_offset is the number of pages to shift annotations in PDF output.
+    physical_offset is the number of pages to shift annotations in PDF output.
     index_mode indicates if numbers should be highlighted individually.
     """
 
@@ -159,9 +159,9 @@ def main(root, toc_first_page=0, toc_last_page=-1,
                 # Map from human logical sense of "page number" to PDF's physical number
                 refpg=label_to_page_number(numstr)
                 if (refpg >= 0):
-                    v(f"Adding link to page {refpg} from {pgnum+toc_offset} for text: {text}")
+                    v(f"Adding link to page {refpg} from {pgnum+physical_offset} for text: {text}")
                     xyz=(0, pixels_to_points(pagemaxy), 0)
-                    emit_annotation(pgnum+toc_offset, refpg, bbox, text, xyz)
+                    emit_annotation(pgnum+physical_offset, refpg, bbox, text, xyz)
                 else:
                     print(f"Error converting '{numstr}' to a page number",
                           text, file=sys.stderr)
@@ -196,7 +196,7 @@ def label_to_page_number(label):
     # XXX Uses a value passed in from the command line for each PDF
     # file until we can figure out how to use pikepdf to convert from
     # labels to page numbers.
-    return int(label)+Label_Offset
+    return int(label)+Logical_Offset
 
 
 def preprocess_hocr(root):
@@ -324,48 +324,6 @@ def enquote(s):
     regex = re.compile(r'"')
     return re.sub(regex, '\\"', s)
 
-def old_hocr_props(title: str) -> dict:
-    """Given the 'title' attribute from an HTML tag, return a
-    dictionary of the hOCR properties. 
-
-    Example input:
-    title='image "p 1;.png"; bbox 0.5 0 5100 6600; ppageno 0'
-
-    Example output:
-    {'image': "p 1;.png"; 'bbox': [0.5 0 5100 6600]; 'ppageno': 0}
-
-    Notes:
-
-    1. Property names are limited to a few dozen keywords which are
-    always all lowercase and with no symbols except underscore.
-
-    2. Property values can be either ascii-words or double-quote
-    delimited ASCII-strings, separated by one or more spaces.
-
-    3. ASCII strings are delimited by double-quotes and there is no
-    mechanism to ever allow a double-quote inside the string.
-    However, ";" (semicolon) and " " (space) *are* allowed.
-
-    See: http://kba.github.io/hocr-spec/1.2/#properties
-         http://kba.github.io/hocr-spec/1.2/#definition-property
-         http://kba.github.io/hocr-spec/1.2/#hocr-props
-    """
-    rv = {}
-    for attrib in title.split(';'):
-        (name, *values) = attrib.split()
-        if not name:
-            continue
-        values = [ int(x) if re.match(r'^[-+0-9]+$', x) else
-                   float(x) if re.match(r'^[-+0-9.]+$', x) else x
-                   for x in values ]
-        if not values:
-            rv[name] = ""
-        elif len(values) == 1:
-            rv[name] = values[0] 
-        else:
-            rv[name] = [ *values ]
-    return rv
-
 def hocr_props(title: str) -> dict:
     """Given the 'title' attribute from an HTML tag, return a
     dictionary of the hOCR properties. 
@@ -420,9 +378,9 @@ def hocr_props(title: str) -> dict:
     return demogrify(rv)
 
 # Translation tables used by (de)mogrify()
-trantable={ ord(';'): 0x204f,      # Quote semicolons with reversed semicolon 
+trantable={ ord(';'): 0x204f,      # Quote semicolons with Reversed Semicolon 
             ord(' '): 0x2420,      # Quote space with SP
-            ord(','): 0x02bb,      # Quote comma with turned comma
+            ord(','): 0x02bb,      # Quote comma with Turned Comma
             ord('\t'): 0x2409 }    # Quote tab as HT (not technically needed)
 inverse={ k:v for v,k in trantable.items() }
 
@@ -475,23 +433,22 @@ import optparse
 
 if __name__ == '__main__':
     parser = optparse.OptionParser()
-    parser.set_usage("%prog [-v] [-t <p1>[-<p2>]] [-T <p> ] <input.hocr> <output.json>\n"
-                     "\tWhere <p> is a PDF page number (first page is 0).\n\n"
-                     "%prog: Add hyperlinks annotations to a scanned Table of Contents")
+    parser.set_usage("%prog [-v] [-t <p1>[-<p2>]] [-P <p>] [-L <p>] in.hocr out.json\n"
+                     "%prog: Add hyperlinked annotations to a scanned Table of Contents")
     parser.add_option('-t', '--toc-page-number', dest='toc_pgnum', default="-", metavar='P1-P2',
-                      help="Which pages in the input hocr file hold the Table of Contents to parse. Use x-y (dash) to separate a range. First page is 0. Defaults to all pages.")
+                      help="Which pages in the input hocr file hold the Table of Contents to parse. Use dash (x-y) to separate a range. First page is numbered 0. Defaults to all pages.")
     parser.add_option('-d', '--dpi', dest='DPI', default="600", 
-                      help="Dots Per Inch of the scan for converting from hocr bitmap coordinates to PDF typographic points. Defaults to 600.")
-    parser.add_option('-T', '--toc-offset', dest='toc_offset', default="0", metavar='N',
-                      help="Annotations are drawn shifted this many pages in the output. Useful if hocr is created from a PDF with just the TOC. Defaults to +0.")
-    parser.add_option('-L', '--label-offset', dest='label_offset', default="0", metavar='N',
-                      help="The PDF page number of the page labeled '1'. Useful when front matter — title page, colophon, frontispiece, etc. — come before page 1.")
+                      help="Dots Per Inch of the scan for converting from hocr bitmap coordinates to PDF typographic points.")
+    parser.add_option('-P', '--physical-offset', dest='physical_offset', default="0", metavar='N',
+                      help="Annotations are drawn shifted +N pages in the output. Allows trimming document to just the TOC pages.")
+    parser.add_option('-L', '--logical-offset', dest='logical_offset', default="0", metavar='N',
+                      help="Offset link destination by +N pages. Default is 0. Tip: Set N to the physical page # of 'Page 1' label. ")
     parser.add_option('-v', dest='verbose', action='count', default=0,
-                      help="Increase verbosity")
+                      help="Increase verbosity.")
     parser.add_option('-i', '--index-mode', dest='index_mode', action='store_true', default=False,
-                      help="Make links for individual numbers. Useful for indices which often have multiple pages listed for an entry.")
+                      help="Link from one or more comma separated numbers.")
     parser.add_option('--debug', dest='debug', action='count', default=0,
-                      help="Show red boxes around annotations")
+                      help="Show red boxes around annotations.")
     
     (opts, args) = parser.parse_args()
 
@@ -519,8 +476,8 @@ if __name__ == '__main__':
         toc_first_page = opts.toc_pgnum
         toc_last_page  = opts.toc_pgnum
 
-    global Label_Offset
-    Label_Offset=int(opts.label_offset)
+    global Logical_Offset
+    Logical_Offset=int(opts.logical_offset)
     global PixelsPerInch
     PixelsPerInch = float(opts.DPI)
     global Debug_Flag
@@ -531,5 +488,5 @@ if __name__ == '__main__':
     main(root,
          toc_first_page=int(toc_first_page),
          toc_last_page=int(toc_last_page),
-         toc_offset=int(opts.toc_offset),
+         physical_offset=int(opts.physical_offset),
          index_mode=opts.index_mode)
