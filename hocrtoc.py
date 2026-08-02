@@ -76,12 +76,10 @@ import sys
 # * http://kba.github.io/hocr-spec/1.2/
 # * https://docs.python.org/3/library/xml.etree.elementtree.html#xpath-support
 
-def main(root, toc_first_page=0, toc_last_page=-1,
-         physical_offset=0, index_mode=False):
+def main(root, toc_first_page=0, toc_last_page=-1, index_mode=False):
     f"""
     root is the hocr XML tree to process,
     toc_first and _last are the page number of the TOC in the hocr input.
-    physical_offset is the number of pages to shift annotations in PDF output.
     index_mode indicates if numbers should be highlighted individually.
     """
 
@@ -112,9 +110,9 @@ def main(root, toc_first_page=0, toc_last_page=-1,
 
         # Parse "<div class='ocr_page' title='bbox 0 0 3500 4529'>"
         pagebbox = props['bbox']
-        pagemaxy=max(int(pagebbox[3]), int(pagebbox[1]))
-        v(f"hocr page bbox is {pagebbox}, pagemaxy is {pagemaxy}")
+        v(f"hocr page bbox is {pagebbox}")
 
+        # For any ocr_line which is a descendant of this page
         for line in page.iter():
             if line.get('class') != 'ocr_line':
                 continue
@@ -124,53 +122,192 @@ def main(root, toc_first_page=0, toc_last_page=-1,
             bbox = props['bbox']
             vvv(f"hocr line {bbox=} ")
 
-            # Flip origin from hocr's top-left to PDF's bottom-left.
+            # Flip origin from hocr (top-left) to PDF (bottom-left).
+            pagemaxy=max(int(pagebbox[3]), int(pagebbox[1]))
             bbox=(bbox[0], pagemaxy-bbox[1], bbox[2], pagemaxy-bbox[3])
             # Convert from pixel coordinates to printer's points.
             bbox=list(pixels_to_points(x) for x in bbox)
+            vvv(f"pdf line {bbox=}")
+
 
             # Reconstitute the line of text from the component words.
-            text=''
+            charline=[]         # If cinfo exists, every character in the line
+            charbbox=[]         # If cinfo exists, every character's bounding box 
+            linetext=''             # Accumulated word or chars
             for word in line.findall('{*}*[@class="ocrx_word"]'):
-                if text:
-                    text = text + ' '
+                if linetext:
+                    linetext = linetext + ' '
                 if word.text:
-                    text = text + word.text
+                    linetext = linetext + word.text
                 else:
                     # If each word is broken into characters, accumulate them.
                     for char in word.findall('{*}*[@class="ocrx_cinfo"]'):
                         if char.text:
-                            text=text+char.text
-            if not text:
+                            linetext=linetext+char.text
+
+                            # Also collect bboxes per char for "--index" mode
+                            charprops = hocr_props(char.attrib['title'])
+                            x_bboxes = charprops['x_bboxes']
+                            charline.append(char.text)
+                            charbbox.append(x_bboxes)
+
+            if not linetext:
                 vv(f"No text in line. {line.attrib=}")
                 continue
 
-            # Check if the line of text ends with a number.
-            numstr=''
-            for c in text[::-1]:
-                if c.isdigit():
-                    numstr=c+numstr
-                else:
-                    break
-            if numstr:
-                # Map from human logical sense of "page number" to PDF's physical number
-                refpg=label_to_page_number(numstr)
-                if (refpg >= 0):
-                    v(f"Adding link to page {refpg} from {pgnum+physical_offset} for text: {text}")
-                    xyz=(0, pixels_to_points(pagemaxy), 0)
-                    emit_annotation(pgnum+physical_offset, refpg, bbox, text, xyz)
-                else:
-                    print(f"Error converting '{numstr}' to a page number",
-                          text, file=sys.stderr)
+            if index_mode and len(charline):
+                # if line of text ends with comma separated numbers, hyperlink them
+                r = Ref()
+                numstr=''
+                bbox=[]
+                for i in reversed(range(len(charline))):
+                    c=charline[i]
+                    if c.isdigit():
+                        numstr = c+numstr
+                        bbox = bboxunion(charbbox[i], bbox)
+                    elif c == ',':
+                        r.label = numstr
+                        r.rect = bbox
+                        #r.emit_annotation()
+                        handle_numstr(numstr, bbox, pgnum, pagemaxy, linetext)
+                        numstr=''
+                        bbox=[]
+                    elif c == ' ':
+                        continue
+                    else:
+                        r.label = numstr
+                        r.rect = bbox
+                        #r.emit_annotation()
+                        handle_numstr(numstr, bbox, pgnum, pagemaxy, linetext)
+                        break
             else:
-                vv(f"Ignoring line without number at end: {text}")
+                # Check if the line of text ends with a number.
+                numstr=''
+                for c in linetext[::-1]:
+                    if c.isdigit():
+                        numstr=c+numstr
+                    else:
+                        break
+                handle_numstr(numstr, bbox, pgnum, pagemaxy, linetext)
 
     end_annotations()
 
     if pgnum < toc_first_page:
         print(f"Invalid TOC first page={toc_first_page}. Last page num is {pgnum} in hocr file.", file=sys.stderr)
 
+
+def bboxunion(a, b):
+    if (not b): b=a
+    (ax1, ay1, ax2, ay2) = a
+    (bx1, by1, bx2, by2) = b
+    return [ min(ax1,ax2,bx1,bx2), min(ay1,ay2,by1,by2),
+             max(ax1,ax2,bx1,bx2), max(ay1,ay2,by1,by2) ]
+    
         
+class Ref():
+    """A link from an area on one page to another page"""
+    def __init__(self, contents=None, srcpg=None, rect=None, label=None, destpg=None, destV=None):
+        if contents is None:
+            self.contents = ''  # human-readable description of the reference
+        if srcpg is None:
+            self.srcpg = -1     # source page (physical PDF page number)
+        if rect is None:
+            self.rect = []      # 4-tuple bounding box of clickable region 
+        if label is None:
+            self.label = ''     # destination page label (logical)
+        if destpg is None:
+            self.destpg = -1    # destination page number (physical)
+        if destV is None:
+            self.destV = 0.00   # Scroll destpage up by percent (0.00 to 1.00)
+
+    def emit_annotation(self):
+        """Output this ref as a Link Annotation to sys.stdout.
+        """
+        if not self.destpg:
+            if not self.label:
+                print(f"Bug: cannot emit annotation for a ref without destination page number or label: {self.contents}", file=sys.stderr)
+                return
+            else:
+                self.destpg=label_to_page_number(self.label)
+                if (self.destpg < 0):
+                    print(f"Error converting '{self.label=}' to a page number",
+                          file=sys.stderr)
+                    return
+        else:
+            v(f"Adding link to page {self.destpg} "
+              f"{str(self.destV*100)+'% ' if self.destV else ''}"
+              f"from {self.srcpg+Physical_Offset} for text: {self.contents}")
+            xyz=(0, pixels_to_points(pagemaxy*(1-self.destV)), 0)
+            json_emit_annotation(xyz)
+
+    def json_emit_annotation(self, xyz=None):
+        r"""Helper for emit_annotation.
+        Print the cpdf JSON formatted PDF link annotation.
+        'xyz' is the PDF triplet for the upper left corner and size to zoom to.
+        """
+
+        boxwidth = Debug_Flag       # Set to 1 to debug with boxes around links
+
+        if not xyz:
+            xyz=(0, 11*72, 0)       # location on destinatinon page
+                                    # defaults to top of page for US Letter
+
+        # Cpdf requires the object number to be unique, but then ignores
+        # it and auto assigns a different number.
+        global cpdf_kludge
+        cpdf_kludge=cpdf_kludge+1
+
+        # cpdf numbers pages starting with 1! Yuck.
+        pagefrom = self.destpg + 1
+
+        print(f',\n'
+          f'[ '
+            f'{pagefrom}, '          # page annotation appears on
+            f'{cpdf_kludge}, '       # object number. cpdf autoassigns.
+            f'{{ '
+              # Optional description for accessibility and manual editing
+              f'"/Contents": {{ "U": "{enquote(self.contents)}" }},'
+
+              # Required type for simple links is /Annot/Link
+              f'"/Type": {{ "N": "/Annot" }},'
+              f'"/Subtype": {{ "N": "/Link" }},'
+              # Destination page. X, Y in top left, Z is zoom; 0 to disable.
+              f'"/Dest": [ {{ "I": {self.destpg} }}, {{ "N": "/XYZ"}},'
+                        f' {{ "I": {xyz[0]} }}, {{ "I": {xyz[1]} }}, {{ "I": {xyz[2]} }} ],'
+
+              # bounding box rectangle (x1, y1, x2, y2)
+              f'"/Rect": [ '
+                f'{{ "F": {self.rect[0]} }},'
+                f'{{ "F": {self.rect[1]} }},'
+                f'{{ "F": {self.rect[2]} }},'
+                f'{{ "F": {self.rect[3]} }}'
+              f'],'
+              # Annotation border geometry: horiz, vert corner radius, and width.
+              # (Width of 0 means no border).
+              f'"/Border": [ {{ "I": 0 }}, {{ "I": 0 }}, {{ "I": {boxwidth} }} ],'
+
+              # Color of border (if width>0)
+              f'"/C": [ {{ "I": 1 }}, {{ "I": 0 }}, {{ "I": 0 }} ],'
+
+              # Highlighting mode on mouse hover (N)one, (I)nvert, (O)utline, or (P)ush
+              f'"/H": {{ "N": "/I" }}'
+            f'}}'
+        f']', end='')
+
+def handle_numstr(numstr, bbox, pgnum, pagemaxy, linetext):
+    if numstr:
+        # Map from logical sense of "page number" to PDF's physical number
+        refpg=label_to_page_number(numstr)
+        if (refpg >= 0):
+            v(f"Adding link to page {refpg} from {pgnum+Physical_Offset} for text: {linetext}")
+            xyz=(0, pixels_to_points(pagemaxy), 0)
+            emit_annotation(pgnum+Physical_Offset, refpg, bbox, linetext, xyz)
+        else:
+            print(f"Error converting '{numstr}' to a page number", linetext, file=sys.stderr)
+            vv(f"Ignoring line without number at end: {linetext}")
+
+
+
 def pixels_to_points(x):
     """hOCR specifies bounding boxes using pixel coordinates.
     PDF needs that scaled to printer's points"""
@@ -354,7 +491,7 @@ def hocr_props(title: str) -> dict:
     for (b,a) in (zip (s[1::2]+[None], s[::2] )):
         t=t+a
         if b:
-            b=mogrify(b)            # quote metachars in strings to prevent confusion.
+            b=mogrify(b)        # quote metachars in strings to prevent confusion.
             t=t+b
     rv = {}
     for attrib in t.split(';'):
@@ -475,6 +612,8 @@ if __name__ == '__main__':
 
     global Logical_Offset
     Logical_Offset=int(opts.logical_offset)
+    global Physical_Offset
+    Physical_Offset = int(opts.physical_offset)
     global PixelsPerInch
     PixelsPerInch = float(opts.DPI)
     global Debug_Flag
@@ -485,5 +624,4 @@ if __name__ == '__main__':
     main(root,
          toc_first_page=int(toc_first_page),
          toc_last_page=int(toc_last_page),
-         physical_offset=int(opts.physical_offset),
          index_mode=opts.index_mode)
