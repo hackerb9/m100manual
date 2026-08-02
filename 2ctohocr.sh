@@ -1,11 +1,11 @@
 #!/bin/bash -xe
 
-# The index is in 2 columns, which throws tesseract for a loop.
+# The M100 manual's index is in 2 columns, which confuses tesseract.
 
 # This script extracts just the index pages, splits the columns (manually), 
 # runs tesseract on each, and then merges the pages back again.
 
-# STEPS:
+# STEPS THIS SCRIPT DOES:
 #
 # 1. Extract the scanned image files for the Index pages. 
 #
@@ -18,13 +18,16 @@
 # 4. Munge the hocr file so that both columns are on a single page.
 #
 # 5. Run hocrtoc: Search for page numbers and turn them into hyperlinks.
+######################################################################
 
 
 # Extract the scanned index pages from input.pdf to index-{000..3}.png
-pdfimages -f 229 -l 232 -png ${1:-input.pdf} index
+mkdir -p twocol
+pdfimages -f 229 -l 232 -png ${1:-input.pdf} twocol/index
 
 # Use the hand-tweaked values to split each image in to two columns.
-./splittocolumns.sh
+cd twocol
+../splittocolumns.sh
 
 tesseract <(ls index-{000..3}-{frisket,mask}.png) dblpage --dpi 600 hocr
 
@@ -35,8 +38,9 @@ linenums=$(awk  'NR%2==0' <<<"$linenums")
 # plus the </div> on the previous line 	(376 377 1083 1084 1852 1853 2336 2337)
 linenums=$(awk  '{print $1-1 "d;"; print $1 "d;"}' <<<"$linenums")
 # delete those lines
-sed -e "$linenums"  dblpage.hocr >index.hocr 
-rm dblpage.hocr
+sed -e "$linenums"  dblpage.hocr >../index.hocr 
+cd ..
+rm -r twocol
 
 # Remove physical page numbers from hocr, if they exist
 sed -i -E 's/ppageno [^;]+;//' index.hocr
