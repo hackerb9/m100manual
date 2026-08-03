@@ -157,7 +157,7 @@ def main(root, toc_first_page=0, toc_last_page=-1, index_mode=False):
 
             if index_mode and len(charline):
                 # if line of text ends with comma separated numbers, hyperlink them
-                r = Ref()
+                r = Ref(contents=charline)
                 numstr=''
                 bbox=[]
                 for i in reversed(range(len(charline))):
@@ -166,19 +166,30 @@ def main(root, toc_first_page=0, toc_last_page=-1, index_mode=False):
                         numstr = c+numstr
                         bbox = bboxunion(charbbox[i], bbox)
                     elif c == ',':
-                        r.label = numstr
-                        r.rect = bbox
-                        #r.emit_annotation()
-                        handle_numstr(numstr, bbox, pgnum, pagemaxy, linetext)
-                        numstr=''
-                        bbox=[]
+                        if numstr and bbox != []:
+                            r.label = numstr
+                            # Flip origin from hocr (top-left) to PDF (bottom-left).
+                            bbox=(bbox[0], pagemaxy-bbox[1], bbox[2], pagemaxy-bbox[3])
+                            # Convert from pixel coordinates to printer's points.
+                            bbox=list(pixels_to_points(x) for x in bbox)
+                            r.rect = bbox
+                            #r.emit_annotation()
+                            handle_numstr(numstr, bbox, pgnum, pagemaxy, linetext)
+                            numstr=''
+                            bbox=[]
+                        continue
                     elif c == ' ':
                         continue
                     else:
-                        r.label = numstr
-                        r.rect = bbox
-                        #r.emit_annotation()
-                        handle_numstr(numstr, bbox, pgnum, pagemaxy, linetext)
+                        if numstr and bbox != []:
+                            r.label = numstr
+                            # Flip origin from hocr (top-left) to PDF (bottom-left).
+                            bbox=(bbox[0], pagemaxy-bbox[1], bbox[2], pagemaxy-bbox[3])
+                            # Convert from pixel coordinates to printer's points.
+                            bbox=list(pixels_to_points(x) for x in bbox)
+                            r.rect = bbox
+                            #r.emit_annotation()
+                            handle_numstr(numstr, bbox, pgnum, pagemaxy, linetext)
                         break
             else:
                 # Check if the line of text ends with a number.
