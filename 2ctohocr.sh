@@ -29,7 +29,8 @@ pdfimages -f 229 -l 232 -png ${1:-input.pdf} twocol/index
 cd twocol
 ../splittocolumns.sh
 
-tesseract <(ls index-{000..3}-{frisket,mask}.png) dblpage --dpi 600 hocr
+tesseract <(ls index-{000..3}-{frisket,mask}.png) dblpage --dpi 600 \
+	  -c hocr_char_boxes=1 -c preserve_interword_spaces=1 hocr
 
 # line numbers of ocr_page <div> tags.  ( 12 377  728 1084 1500 1853 2274 2337)
 linenums=$(awk  '/div class=.ocr_page/ {print NR}'  dblpage.hocr)
