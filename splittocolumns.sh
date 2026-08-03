@@ -33,6 +33,13 @@ mask["index-001.png"]="2658 1047 4221 6046"
 mask["index-002.png"]="2602 1049 4177 6050"
 mask["index-003.png"]="2637 1049 4212 2166"
 
+# Also mask out the black dots from the spiral bound binding holes.
+declare -A binding
+binding["index-000.png"]="$bbx1,$bby1 200,$bby2" 
+binding["index-001.png"]="$((bbx2-250)),$bby1 $bbx2,$bby2" 
+binding["index-002.png"]="$bbx1,$bby1 200,$bby2" 
+binding["index-003.png"]="$((bbx2-250)),$bby1 $bbx2,$bby2" 
+
 
 ######################################################################
 
@@ -41,9 +48,10 @@ for pg in ${!mask[@]}; do
     echo  "Writing to $output..." >&2
     read x1 y1 x2 y2 <<< ${mask[$pg]}
 
-    # Mask out just the rectangle of the 2nd column
+    # Mask out just the rectangle of the 2nd column (and the binding holes)
     convert $pg -fill white \
-     	    -draw "rectangle $x1,$y1 $x2,$y2" \
+     	    -draw "rectangle $x1,$y1 $x2,$y2
+	    	   rectangle ${binding[$pg]}" \
 	    ${output}-mask.png
 
     # Mask out everything but the 2nd column. Frisket (inverse mask)
